@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniMap_Client", "MiniMap_Client\MiniMap_Client.csproj", "{C415DDEF-B40F-4D88-B519-6C2590860CCD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C415DDEF-B40F-4D88-B519-6C2590860CCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C415DDEF-B40F-4D88-B519-6C2590860CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C415DDEF-B40F-4D88-B519-6C2590860CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C415DDEF-B40F-4D88-B519-6C2590860CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

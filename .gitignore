@@ -1,0 +1,10 @@
+
+packages/
+
+.vs/
+
+MiniMap_Client/bin/
+
+MiniMap_Client/obj/
+
+*.user

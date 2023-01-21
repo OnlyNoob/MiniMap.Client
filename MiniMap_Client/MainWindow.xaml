@@ -1,0 +1,179 @@
+﻿<Controls:MetroWindow x:Class="MiniMap_Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:MMClient="clr-namespace:MiniMap_Client"
+        Title="Metrostroi MiniMap Client" Height="400" Width="750" MinHeight="100" MinWidth="750" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" GlowBrush="{DynamicResource AccentColorBrush}" NonActiveGlowBrush="Red" Closing="MainWindow_Closing" Loaded="MainWindow_Loaded">
+
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands>
+            <Menu x:Name="MainMenu" VerticalAlignment="Stretch"
+                  HorizontalAlignment="Left" Background="{x:Null}">
+                <MenuItem Header="Тема"
+                          ItemsSource="{Binding AppThemes, Mode=OneWay}"
+                          ItemContainerStyle="{StaticResource AppThemeMenuItemStyle}"
+                          Background="{DynamicResource AccentColorBrush}" />
+                <MenuItem Header="Цвет"
+                          ItemsSource="{Binding AccentColors, Mode=OneWay}"
+                          ItemContainerStyle="{StaticResource AccentColorMenuItemStyle}"
+                          Background="{DynamicResource AccentColorBrush}" />
+                <MenuItem Header="Окно"
+                          Background="{DynamicResource AccentColorBrush}">
+                    <MenuItem IsCheckable="True" Header="Поверх всех окон"
+                                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:MetroWindow}}, Path=Topmost}" />
+                </MenuItem>
+            </Menu>
+            <Button Click="LaunchMiniMapOnGitHub"
+                    ToolTip="Metrostroi-MiniMap on GitHub">
+                <Rectangle Width="22"
+                           Height="22"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{StaticResource appbar_github}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+    
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button ToolTip="Открыть чат" Click="ShowChatFlyout" Visibility="Collapsed">
+                <Rectangle Width="22"
+                           Height="22"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform"
+                                     Visual="{StaticResource appbar_chat}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="BtnSrvFlyout" Content="Сервер" Click="ShowServerFlyout" />
+            <Button Content="Настройки" Click="ShowSettingsFlyout" IsEnabled="False" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout Header="Настройки"
+                             Position="Top" 
+                             ClosingFinished="FSettings_ClosingFinished">
+               <!-- <StackPanel Margin="5,5,5,5"
+                            HorizontalAlignment="Left">
+                    <StackPanel Margin="0,0,0,0"
+                                HorizontalAlignment="Left"
+                                Orientation="Horizontal">
+                        <Label Content="Стиль:" Margin="0" VerticalAlignment="Center" FontSize="16"/>
+                        <Button Content="Светлый" VerticalAlignment="Center" Style="{DynamicResource AccentedSquareButtonStyle}" Click="LightButtonClick"/>
+                        <Button Content="Тёмный" VerticalAlignment="Center" Style="{DynamicResource AccentedSquareButtonStyle}" Click="DarkButtonClick"/>
+                        <Label Content="Цвет:" Margin="0" VerticalAlignment="Center" FontSize="16"/>
+                        <Button Content="Зелёный" VerticalAlignment="Center" Style="{DynamicResource AccentedSquareButtonStyle}" Click="GreenButtonClick"/>
+                        <Button Content="Синий" VerticalAlignment="Center" Style="{DynamicResource AccentedSquareButtonStyle}" Click="BlueButtonClick"/>
+                        <Button Content="Красный" VerticalAlignment="Center" Style="{DynamicResource AccentedSquareButtonStyle}" Click="RedButtonClick"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,0,0"
+                                HorizontalAlignment="Left"
+                                Orientation="Horizontal">
+                        <Label Content="Поверх остальных окон:" Margin="0" VerticalAlignment="Center" FontSize="16"/>
+                        <Controls:ToggleSwitch x:Name="TSMainWindowTopmost" OnLabel="Вкл. " OffLabel="Выкл. " Margin="0" BorderThickness="0,5,0,0" IsChecked="False" IsCheckedChanged="TSMainWindowTopmost_ICC" />
+                    </StackPanel>
+                </StackPanel> -->
+            </Controls:Flyout>
+            <Controls:Flyout Header="Сервер"
+                             Position="Left"
+                             ClosingFinished="FServers_ClosingFinished">
+                <StackPanel Margin="5,5,5,5"
+                            HorizontalAlignment="Left">
+                    <StackPanel Margin="5,5,5,5"
+                            HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Button Content="Подключиться" Click="Btn_ClientConnect"/>
+                        <Button Content="Отключиться" Click="Btn_ClientDisconnect"/>
+                    </StackPanel>
+                    <DataGrid x:Name="ServersDataGrid"
+                              Grid.Column="1"
+                              Grid.Row="1"
+                              RenderOptions.ClearTypeHint="Enabled"
+                              TextOptions.TextFormattingMode="Display"
+                              HeadersVisibility="All"
+                              Margin="0"
+                              SelectionUnit="FullRow"
+                              ItemsSource="{Binding AppServers}"
+                              AutoGenerateColumns="False" 
+                              SelectionMode="Single" 
+                              MaxHeight="250">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Имя"
+                                    Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="IP"
+                                    Binding="{Binding IP}" />
+                            <DataGridTextColumn Header="Порт"
+                                    Binding="{Binding Port}" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowValidationRules>
+                            <MMClient:CheckServerData ValidatesOnTargetUpdated="True"
+                                                                    ValidationStep="CommittedValue" />
+                            <MMClient:CheckServerData ValidatesOnTargetUpdated="True"
+                                                                    ValidationStep="UpdatedValue" />
+                        </DataGrid.RowValidationRules>
+                    </DataGrid>
+                </StackPanel>
+            </Controls:Flyout>
+            <Controls:Flyout Header="Чат"
+                             Position="Right" 
+                             ClosingFinished="FChat_ClosingFinished">
+                <Grid Margin="10"
+                      Width="275">
+                    <Grid.ColumnDefinitions>
+                        <!--<ColumnDefinition Width="Auto" />-->
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                        <!-- Buggy! Если вверху то 30 верхних пикселей не кликабельны и при смене позиции ломается анимация! -->
+                    <UniformGrid Columns="2"
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="0"
+                                 Margin="10">
+                        <Label Content="Положение:" Margin="0" VerticalAlignment="Center" FontSize="16"/>
+                    <ComboBox x:Name="CBChatPossition" IsReadOnly="True" SelectionChanged="CBChatPos_SC" SelectedIndex="1"  >
+                        <!--<ComboBoxItem Content="Вверху"/>-->
+                        <ComboBoxItem Content="Слева"/>
+                        <ComboBoxItem Content="Справа"/>
+                        <!--<ComboBoxItem Content="Внизу"/>-->
+                    </ComboBox>
+                    </UniformGrid>
+                    <RichTextBox x:Name="RTB_Chat" Grid.Row="1" Width="275" IsUndoEnabled="False" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="TBChatInput" Grid.Row="2" Width="275" Controls:TextBoxHelper.UseFloatingWatermark="True" Controls:TextBoxHelper.Watermark="Сообщение" MaxLines="1" KeyDown="TBChatInput_KeyDown"/>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <xctk:Zoombox x:Name="TrackZoomBox" IsUsingScrollBars="False" KeepContentInBounds="False">
+            <xctk:Zoombox.ViewStack>
+                <xctk:ZoomboxView>Fit</xctk:ZoomboxView>
+            </xctk:Zoombox.ViewStack>
+            <Border BorderThickness="2" BorderBrush="{DynamicResource AccentColorBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Canvas x:Name="TrackDrawPlate" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </xctk:Zoombox>
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>ALPHA 19.05.2016</StatusBarItem>
+            <Separator Style="{StaticResource MetroStatusBarSeparator}" />
+            <StatusBarItem>Статус:</StatusBarItem>
+            <StatusBarItem x:Name="ClientNetStatus" Content="Не подключён" />
+        </StatusBar>
+    </Grid>
+</Controls:MetroWindow>
